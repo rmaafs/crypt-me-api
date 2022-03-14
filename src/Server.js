@@ -11,12 +11,12 @@ function Server() {
   let app = express().use(cors()).use(express.json()); //Crea al servidor
   const port = process.env.PORT || 20203; //Puerto donde abriremos el servicio
 
-  app.use((req, res, next) => {
-    if (!req) return; //Para que no me aparezca que no usé la variable jaja
-
-    res.header("Access-Control-Allow-Origin", "*");
-    next();
-  });
+  const corsOptions = {
+      origin: '*',
+      methods: ['POST', 'GET', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization']
+  }
+  app.use(cors(corsOptions));
 
   const db = new Database(() => {
     /**
