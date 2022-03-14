@@ -12,10 +12,10 @@ function Server() {
   const port = process.env.PORT || 20203; //Puerto donde abriremos el servicio
 
   const corsOptions = {
-      origin: '*',
-      methods: ['POST', 'GET', 'PATCH', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization']
-  }
+    origin: "*",
+    methods: ["POST", "GET", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  };
   app.use(cors(corsOptions));
 
   const db = new Database(() => {
