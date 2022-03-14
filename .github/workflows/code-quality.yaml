@@ -1,0 +1,102 @@
+name: Build & Deploy
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  code-quality:
+    name: "👀 Code Quality"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - name: 🔽 Descargar proyecto
+        uses: actions/checkout@v2
+        with:
+          persist-credential: false
+
+      - name: 🏠 Instalar Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 👷‍♂️ Instalar dependencias
+        run: |
+          npm i
+      - name: 🔅 Sintaxis estándar prettier
+        run: |
+          echo "Recuerda tener instalado Prettier como formateador de código en tu Editor de texto"
+          echo "Este código usará como estándar la indentación de Prettier."
+          echo "Para solucionar tu indentación, ejecuta npm run sintax:fix"
+          npm run sintax:test
+      - name: 👀 Calidad del código
+        run: |
+          echo "Se revisará la calidad del código para que la consola no tenga warnings ni errores."
+          echo "Se validará que no existan variables sin usar, console.logs, malos estándares de código, etc."
+          npm run lint
+      - name: 👀 Estándares del proyecto
+        run: |
+          npm test -- estandar.test.js
+      - name: 🧪 Pruebas unitarias de conexiones
+        env:
+          MONGO_BD: ${{ secrets.MONGO_BD }}
+        run: |
+          echo $MONGO_BD
+          echo '{ "mongopath": "${{ secrets.MONGO_BD }}"}' > credentials.json
+          npm test -- connections.test.js --forceExit
+  generate-docs:
+    needs: code-quality
+    name: "📃 Generate docs"
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+      - name: 🔽 Descargar proyecto
+        uses: actions/checkout@v2
+        with:
+          persist-credential: false
+
+      - name: 🏠 Instalar Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: 👷‍♂️ Instalar dependencias
+        run: |
+          npm i
+
+      - name: 👷📃 Generar documentación
+        run: |
+          npm run generate-docs
+
+      - name: 📄 Crear Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          branch: master-docs
+          base: master
+          delete-branch: true
+          commit-message: Nueva documentación generada
+          title: Nueva documentación generada
+          body: |
+            Se ha detectado nuevos cambios en la documentación del archivo. 
+            Por lo que se ha generado una nueva documentación.
+          labels: documentation
+          reviewers: rmaafs
+
+      - name: 🚀 Deploy docs
+        uses: JamesIves/github-pages-deploy-action@3.5.9
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
+        with:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          BRANCH: gh-pages-docs
+          FOLDER: docs
