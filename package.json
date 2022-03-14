@@ -6,10 +6,10 @@
   "scripts": {
     "test": "jest",
     "start": "nodemon --exec node_modules/.bin/babel-node index.js",
-    "sintax:test": "prettier --check \"{,!(node_modules|docs)/**/}*.js\"",
-    "sintax:fix": "prettier --check --write \"{,!(node_modules|docs)/**/}*.js\"",
+    "syntax:test": "prettier --check \"{,!(node_modules|docs)/**/}*.js\"",
+    "syntax:fix": "prettier --check --write \"{,!(node_modules|docs)/**/}*.js\"",
     "lint": "eslint . --ext .js",
-    "check": "npm run sintax:test && npm run lint && jest",
+    "check": "npm run syntax:test && npm run lint && jest",
     "generate-docs": "node_modules/.bin/jsdoc --configure .jsdoc.json --verbose"
   },
   "author": "Rodrigo Maafs Atilano",

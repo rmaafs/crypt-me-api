@@ -15,40 +15,45 @@ jobs:
         node-version: [12.x]
 
     steps:
-      - name: 🔽 Descargar proyecto
+      - name: 🔽 Download project
         uses: actions/checkout@v2
         with:
           persist-credential: false
 
-      - name: 🏠 Instalar Node.js ${{ matrix.node-version }}
+      - name: 🏠 Install Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: 👷‍♂️ Instalar dependencias
+      - name: 👷‍♂️ Install dependencies
         run: |
           npm i
-      - name: 🔅 Sintaxis estándar prettier
+
+      - name: 🔅 Syntaxis standard prettier
         run: |
           echo "Recuerda tener instalado Prettier como formateador de código en tu Editor de texto"
           echo "Este código usará como estándar la indentación de Prettier."
-          echo "Para solucionar tu indentación, ejecuta npm run sintax:fix"
-          npm run sintax:test
-      - name: 👀 Calidad del código
+          echo "Para solucionar tu indentación, ejecuta npm run syntax:fix"
+          npm run syntax:test
+
+      - name: 👀 Code quality
         run: |
           echo "Se revisará la calidad del código para que la consola no tenga warnings ni errores."
           echo "Se validará que no existan variables sin usar, console.logs, malos estándares de código, etc."
           npm run lint
-      - name: 👀 Estándares del proyecto
+
+      - name: 👀 Project standards
         run: |
           npm test -- estandar.test.js
-      - name: 🧪 Pruebas unitarias de conexiones
+
+      - name: 🧪 Tests
         env:
           MONGO_BD: ${{ secrets.MONGO_BD }}
         run: |
           echo $MONGO_BD
           echo '{ "mongopath": "${{ secrets.MONGO_BD }}"}' > credentials.json
           npm test -- connections.test.js --forceExit
+
   generate-docs:
     needs: code-quality
     name: "📃 Generate docs"
@@ -60,32 +65,32 @@ jobs:
         node-version: [12.x]
 
     steps:
-      - name: 🔽 Descargar proyecto
+      - name: 🔽 Download project
         uses: actions/checkout@v2
         with:
           persist-credential: false
 
-      - name: 🏠 Instalar Node.js ${{ matrix.node-version }}
+      - name: 🏠 Install Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: 👷‍♂️ Instalar dependencias
+      - name: 👷‍♂️ Install dependencies
         run: |
           npm i
 
-      - name: 👷📃 Generar documentación
+      - name: 👷📃 Generate documentation
         run: |
           npm run generate-docs
 
-      - name: 📄 Crear Pull Request
+      - name: 📄 Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
           branch: master-docs
           base: master
           delete-branch: true
-          commit-message: Nueva documentación generada
-          title: Nueva documentación generada
+          commit-message: New documentation generated
+          title: New documentation generated
           body: |
             Se ha detectado nuevos cambios en la documentación del archivo. 
             Por lo que se ha generado una nueva documentación.
