@@ -29,7 +29,7 @@ function Server() {
 
     //Abrimos el servicio de API REST
     const server = app.listen(port, () => {
-      console.log(`API REST Ejecutado en el puerto http://localhost:${port}`);
+      console.log(`API REST started at http://localhost:${port}`);
       app.emit("appStarted", server, db);
     });
   });
@@ -52,9 +52,7 @@ function Server() {
         if (data.id) {
           res.status(201).json(data);
         } else {
-          res
-            .status(400)
-            .json({ error: "Hubo un error al procesar tu solicitud." });
+          res.status(400).json({ error: "Server error." });
         }
       })
       .catch((err) => {
@@ -77,9 +75,7 @@ function Server() {
         if (data.text) {
           res.status(200).json(data);
         } else {
-          res
-            .status(400)
-            .json({ error: "Hubo un error al procesar tu solicitud." });
+          res.status(400).json({ error: "Server error." });
         }
       })
       .catch((err) => {

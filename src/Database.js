@@ -5,7 +5,7 @@ import credentials from "../credentials.json";
 import { Promise } from "es6-promise";
 
 const LANG_NOT_FOUND =
-  "Registro no encontrado. Ingresa un ID válido, o problablemente el ID que ingresaste ya fue eliminado.";
+  "Record not found. Send a valid ID, or probably the ID was deleted.";
 
 /**
  * Clase con funciones y conexiones a la base de datos.
@@ -37,9 +37,9 @@ class Database {
   async addReg(text, ip) {
     return await new Promise((resolve, reject) => {
       if (!text) {
-        return reject('Por favor, envía el texto a encriptar como "text".');
+        return reject('Please, send the message as "text".');
       } else if (!this.isBase64(text)) {
-        return reject("Por favor, envía un texto en formato base64.");
+        return reject("Please, send the message in base64 format.");
       }
 
       //Obtenemos el key con el que encriptaremos el texto
@@ -63,14 +63,14 @@ class Database {
         })
         .then((data) => {
           if (data.insertedId) {
-            this.systemLog("Creado " + data.insertedId.toString());
+            this.systemLog("Created " + data.insertedId.toString());
             return resolve({
               id: data.insertedId,
               secret: secret,
               end: dateEnd,
             });
           }
-          return reject("No se asignó un ID en base de datos.");
+          return reject("An ID was not assigned in the database.");
         })
         .catch((err) => reject(err));
     });
@@ -85,11 +85,9 @@ class Database {
   async getReg(id, secret) {
     return await new Promise((resolve, reject) => {
       if (!id) {
-        return reject('Por favor, envía el ID como "id".');
+        return reject('Please, send the ID as "id".');
       } else if (!secret) {
-        return reject(
-          'Por favor, envía la llave de desencriptación como "secret".'
-        );
+        return reject('Please, send the secret key as "secret".');
       }
 
       //Buscamos el registro en base de datos
@@ -137,9 +135,9 @@ class Database {
   async deleteReg(objectId) {
     await this.coll
       .deleteOne({ _id: objectId })
-      .then(() => this.systemLog("Eliminado " + objectId.toString()))
+      .then(() => this.systemLog("Deleted " + objectId.toString()))
       .catch((err) =>
-        this.systemLog(objectId.toString() + " no fue eliminado: " + err)
+        this.systemLog(objectId.toString() + " not deleted: " + err)
       );
   }
 
@@ -151,9 +149,7 @@ class Database {
       .deleteMany({ end: { $lte: Date.now() } })
       .then((data) => {
         if (data.deletedCount > 0) {
-          this.systemLog(
-            data.deletedCount + " registros borrados automáticamente."
-          );
+          this.systemLog(data.deletedCount + " records deleted automatically.");
         }
       })
       .catch((err) => console.log(err));
