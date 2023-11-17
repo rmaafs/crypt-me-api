@@ -1,0 +1,11 @@
+version: "3"
+services:
+  crypt-backend:
+    image: rmaafs/crypt-me-api:latest
+    ports:
+      - "20203:20203"
+    network_mode: bridge
+    environment:
+      VIRTUAL_HOST: api-crypt.rmaafs.com
+    env_file: /root/.env/crypt-me-api/secrets.env
+    restart: always

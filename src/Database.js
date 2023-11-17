@@ -12,6 +12,9 @@ const LANG_NOT_FOUND =
  */
 class Database {
   constructor(callbackStartServer) {
+    if (process.env.MONGO_PATH === undefined || process.env.MONGO_PATH === "") {
+      throw Error("Please add the environment variable 'MONGO_PATH'.");
+    }
     //Conectamos la base de datos de mongodb
     MongoClient.connect(process.env.MONGO_PATH, {
       useUnifiedTopology: true,
