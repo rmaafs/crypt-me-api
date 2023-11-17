@@ -3,28 +3,24 @@ services:
   mongodb:
     image: "mongo"
     container_name: "mongodb_container"
-    environment:
-      - MONGO_INITDB_DATABASE=crypt_db
-      - MONGO_INITDB_ROOT_USERNAME=crypt_user
-      - MONGO_INITDB_ROOT_PASSWORD=cryPt_p4ssw0rD
     volumes:
       - ./mongo-volume:/data/db
+    command: mongod --port 21017
     ports:
-      - "27017-27019:27017-27019"
+      - "127.0.0.1:21017:21017"
 
   crypt-backend:
     image: rmaafs/crypt-me-api:latest
     ports:
       - "20203:20203"
-
     environment:
       VIRTUAL_HOST: api-crypt.rmaafs.com
-      MONGO_INITDB_DATABASE: "mongodb://mongodb:27017/?authSource=crypt_db&gssapiServiceName=mongodb"
-    #env_file: /root/.env/crypt-me-api/secrets.env
+      MONGO_PATH: "mongodb://mongodb:21017"
     restart: always
     depends_on:
       - mongodb
-    network_mode: bridge
 
-volumes:
-  mongo-volume:
+networks:
+  default:
+    name: nginx-proxy
+    external: true
