@@ -48,10 +48,10 @@ jobs:
 
       - name: 🧪 Tests
         env:
-          MONGO_BD: ${{ secrets.MONGO_BD }}
+          MONGO_PATH: ${{ secrets.MONGO_BD }}
         run: |
-          echo $MONGO_BD
-          echo '{ "mongopath": "${{ secrets.MONGO_BD }}"}' > credentials.json
+#          echo $MONGO_PATH
+#          echo '{ "mongopath": "${{ secrets.MONGO_BD }}"}' > credentials.json
           npm test -- connections.test.js --forceExit
 
   generate-docs:

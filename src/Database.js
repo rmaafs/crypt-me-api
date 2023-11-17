@@ -1,7 +1,6 @@
 import CryptoJS from "crypto-js";
 import crypto from "crypto";
 import { MongoClient, ObjectId } from "mongodb";
-import credentials from "../credentials.json";
 import { Promise } from "es6-promise";
 
 const LANG_NOT_FOUND =
@@ -14,7 +13,7 @@ const LANG_NOT_FOUND =
 class Database {
   constructor(callbackStartServer) {
     //Conectamos la base de datos de mongodb
-    MongoClient.connect(credentials.mongopath, {
+    MongoClient.connect(process.env.MONGO_PATH, {
       useUnifiedTopology: true,
     }).then(async (client) => {
       this.client = client;
